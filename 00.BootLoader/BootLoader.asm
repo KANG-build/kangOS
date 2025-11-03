@@ -47,7 +47,7 @@ START:
                             ; 2를 더해야 함  
 
     jmp .MESSAGELOOP        ; 메시지 출력 루프로 이동하여 다음 문자를 출력               
-MESSAGEEND:
+.MESSAGEEND:
 
     jmp $           ; 현재 위치에서 무한 루프 수행 
 
