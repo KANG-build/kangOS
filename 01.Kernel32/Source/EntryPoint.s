@@ -140,7 +140,6 @@ GDT:
         db 0x00
         db 0x00
         db 0x00
-        db 0x00
 
     ; 보호 모드 커널용 코드 세그먼트 디스크립터 
     CODEDESCRIPTOR: 
