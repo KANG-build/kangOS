@@ -10,7 +10,7 @@ void Main( void )
     while ( 1 );
 }
 
-void kPringString( int iX, int iY, const char* pcString )
+void kPrintString( int iX, int iY, const char* pcString )
 {
     CHARACTER* pstScreen = ( CHARACTER* ) 0xB8000;
     int i; 

@@ -3,11 +3,11 @@
 ############################################################
 
 NASM32 = nasm
-GCC32 = x86_64-pc-linux-gcc.exe -c -m32 -ffreestanding 
-LD32 = x86_64-pc-linux-ld.exe -melf_i386 -T ../elf_i386.x -nostdlib -e Main -Ttext 0x10200 
-OBJCOPY32 = x86_64-pc-linux-objcopy -j .text -j .data -j .rodata -j .bss -S -O binary 
+GCC32 = gcc -c -m32 -ffreestanding -fno-pic -fno-pie 
+LD32 = ld -m elf_i386 -T ../elf_i386.x -nostdlib -e Main -Ttext 0x10200 
+OBJCOPY32 = objcopy -j .text -j .data -j .rodata -j .bss -S -O binary
 
-OBJECTDIRECTORY = Temp 
+OBJECTDIRECTORY = Temp
 SOURCEDIRECTORY = Source
 
 ############################################################
@@ -37,7 +37,7 @@ Kernel32.bin: $(OBJECTDIRECTORY)/EntryPoint.bin $(OBJECTDIRECTORY)/Kernel32.elf.
 
 clean:
 	rm -f *.bin 
-	rm -f $(OBJECTDIRECTORY)/*.* 
+	rm -f $(OBJECTDIRECTORY)/*.*
 
 ############################################################
 # Make에 의해 다시 호출되는 부분, Temp 디렉터리를 기준으로 수행됨  
@@ -50,7 +50,7 @@ ASSEMBLYOBJECTFILES = $(notdir $(patsubst %.asm, %.o, $(ASSEMBLYSOURCEFILES)))
 
 # .c 파일을 .o 파일로 바꾸는 규칙 정의 
 %.o: ../$(SOURCEDIRECTORY)/%.c 
-			$(GCC32) -c &< 
+			$(GCC32) -c $< 
 	
 # .asm 파일을 .o 파일로 바꾸는 규칙 정의  
 %.o: ../$(SOURCEDIRECTORY)/%.asm 
