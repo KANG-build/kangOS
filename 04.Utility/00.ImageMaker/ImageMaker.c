@@ -151,50 +151,38 @@ int CopyFile( int iSourceFd, int iTargetFd )
     while ( 1 )
     { 
         iRead = read( iSourceFd, vcBuffer, sizeof( vcBuffer ) );
-        iWrite = write( iTargetFd, vcBuffer, iRead );
 
-        /* 
-        if ( iRead != iWrite )
-        {
-            fprintf( stderr, "[ERROR] iRead != iWrite\n" );
-            exit( -1 );
-        }
-        iSourceFileSize += iRead;
-
-        if ( iRead != sizeof( vcBuffer ) )
-        {
-            break;
-        }
-        */
-
-        // 2. 읽기 오류 확인 (가장 중요!)
+        // 읽기 오류 확인
         if ( iRead == -1 )
         {
             fprintf( stderr, "[ERROR] Read fail. errno = %d\n", errno );
             exit( -1 );
         }
-        // 3. 파일 끝(EOF) 확인
+        // 파일 끝(EOF) 확인
         else if ( iRead == 0 )
         {
             break;
         }
 
-        // 4. 쓰기 시도 (읽은 만큼만)
+        // 쓰기 시도 (읽은 만큼만)
         iWrite = write( iTargetFd, vcBuffer, iRead );
 
-        // 5. 쓰기 오류 확인
+        // 쓰기 오류 확인
         if ( iWrite == -1 )
         {
             fprintf( stderr, "[ERROR] Write fail. errno = %d\n", errno );
             exit( -1 );
         }
 
-        // 6. 부분 쓰기(Partial Write) 오류 확인 (사용자가 원래 의도한 오류)
+        // 부분 쓰기(Partial Write) 오류 확인
         if ( iRead != iWrite )
         {
             fprintf( stderr, "[ERROR] Partial write: iRead(%d) != iWrite(%d)\n", iRead, iWrite );
             exit( -1 );
         }
+        
+        // ⭐️ 이 줄을 다시 추가해야 합니다!
+        iSourceFileSize += iRead; 
     }
     return iSourceFileSize;
 }
