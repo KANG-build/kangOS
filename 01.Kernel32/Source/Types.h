@@ -7,7 +7,7 @@
 #define QWORD   unsigned long  
 #define BOOL    unsigned char 
 
-#define TURE    1 
+#define TRUE    1 
 #define FALSE   0 
 #define NULL    0 
 
