@@ -1,10 +1,10 @@
 ####################################################################
 # 빌드 환경 및 규칙 설정
 ####################################################################
-NASM32 = nasm
-GCC32 = gcc -c -m32 -ffreestanding -fno-pic -fno-pie 
-LD32 = ld -m elf_x86_64 -T ../elf_x86_64.x -nostdlib -e Main -Ttext 0x200000
-OBJCOPY32 = objcopy -j .text -j .data -j .rodata -j .bss -S -O binary
+NASM64 = nasm -f elf64
+GCC64 = gcc -c -m64 -ffreestanding -fno-pic -fno-pie 
+LD64 = ld -m elf_x86_64 -T ../elf_x86_64.x -nostdlib -e Main -Ttext 0x200000
+OBJCOPY64 = objcopy -j .text -j .data -j .rodata -j .bss -S -O binary
 
 OBJECTDIRECTORY = Temp
 SOURCEDIRECTORY = Source
