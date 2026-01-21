@@ -5,7 +5,7 @@
 void kPrintString( int iX, int iY, const char* pcString );
 BOOL kInitializeKernel64Area( void );
 BOOL kIsMemoryEnough( void );
-void kCopyKernel64ImageTo2MByte( void );
+void kCopyKernel64ImageTo2Mbyte( void );
 
 // Main 함수 
 void Main( void )
