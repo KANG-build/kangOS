@@ -36,7 +36,7 @@ int main( int argc, char* argv[] )
     if ((iTargetFd = open( "Disk.img", O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 
         S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH )) == -1 )
     {
-        fprintf( stderr, "[ERROR] Disk.img open fail. %d\n");
+        fprintf( stderr, "[ERROR] Disk.img open fail. errno = %d\n", errno);
         exit( -1 );
     }
 
@@ -121,7 +121,7 @@ int AdjustInSectorSize( int iFd, int iSourceSize )
     if ( iAdjustSizeToSector != 0 )
     {
         iAdjustSizeToSector = 512 - iAdjustSizeToSector;
-        printf("[INFO] File size [%lu] and fill [%u] byte\n", iSourceSize, 
+        printf("[INFO] File size [%d] and fill [%u] byte\n", iSourceSize, 
             iAdjustSizeToSector );
         for ( i = 0 ; i < iAdjustSizeToSector ; i++ )
         {
