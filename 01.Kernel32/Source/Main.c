@@ -41,7 +41,7 @@ void Main( void )
     kPrintString( 45, 5, "Pass");
 
     // IA-32e 모드 커널을 위한 페이지 테이블 생성 
-    kPrintString( 0, 6, "IA-32e Page Tables Initialize................[    ]");
+    kPrintString( 0, 6, "IA-32e Page Tables Initialize..............[    ]");
     kInitializePageTables();
     kPrintString( 45, 6, "Pass");
     
@@ -50,12 +50,12 @@ void Main( void )
     *( ( DWORD* ) vcVendorString )     = dwEBX;
     *( ( DWORD* ) vcVendorString + 1 ) = dwEDX;
     *( ( DWORD* ) vcVendorString + 2 ) = dwECX;
-    kPrintString( 0, 7, "Processor Vendor String......................[     ]" );
+    kPrintString( 0, 7, "Processor Vendor String...................[    ]" );
     kPrintString( 45, 7, vcVendorString );
 
     // 64비트 지원 유무 확인
     kReadCPUID( 0x80000001, &dwEAX, &dwEBX, &dwECX, &dwEDX );
-    kPrintString( 0, 8, "64bit Mode Support Check.....................[     ]" );
+    kPrintString( 0, 8, "64bit Mode Support Check..................[    ]" );
     if( dwEDX & ( 1 << 29 ) )
     {
         kPrintString( 45, 8, "Pass" );
@@ -68,7 +68,7 @@ void Main( void )
     }
 
     // IA-32e 모드 커널을 0x200000(2Mbyte) 어드레스로 이동
-    kPrintString( 0, 9, "Copy IA-32e Kernel To 2M Address...........[     ]" );
+    kPrintString( 0, 9, "Copy IA-32e Kernel To 2M Address............[    ]" );
     kCopyKernel64ImageTo2Mbyte();
     kPrintString( 45, 9, "Pass" );
 
