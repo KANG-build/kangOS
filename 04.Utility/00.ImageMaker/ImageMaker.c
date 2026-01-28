@@ -13,7 +13,7 @@
 
 // 함수 선언 
 int AdjustInSectorSize( int iFd, int iSourceSize );
-void WriteKernelInformation( int iTargetFd, int iKernelSectorCount, int iKernel64SectorCount );
+void WriteKernelInformation( int iTargetFd, int iTotalKernelSectorCount, int iKernel64SectorCount );
 int CopyFile( int iSourceFd, int iTargetFd );
 
 // Main 함수 
