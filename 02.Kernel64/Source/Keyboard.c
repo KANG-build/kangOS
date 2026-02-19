@@ -1,5 +1,3 @@
-// [예제 11-1] Keyboard.c  (너가 올린 사진 속 코드 정리본)
-
 #include "Types.h"
 #include "AssemblyUtility.h"
 #include "Keyboard.h"
