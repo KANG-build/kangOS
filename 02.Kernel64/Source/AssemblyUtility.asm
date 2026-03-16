@@ -5,6 +5,7 @@ SECTION .text        ; text 섹션(세그먼트)을 정의
 ; C 언어에서 호출할 수 있도록 이름을 노출함
 global  kInPortByte, kOutPortByte, kLoadGDTR, kLoadTR, kLoadIDTR
 global kEnableInterrupt, kDisableInterrupt, kReadRFLAGS
+global kReloadSegments
 
 ; 포트로부터 1바이트를 읽음
 ; PARAM: 포트 번호
@@ -72,10 +73,30 @@ kDisableInterrupt:
     cli             ; 인터럽트를 비활성화
     ret 
 
-; RFLAGS 레지스터를 읽어서 되돌려줌 
-; PARAM: 없음 
+; RFLAGS 레지스터를 읽어서 되돌려줌
+; PARAM: 없음
 kReadRFLAGS:
-    pushfq          ; RFLAGS 레지스터를 스택에 저장 
-    pop rax         ; 스택에 저장된 RFLAGS 레지스터를 RAX 레지스터에 저장하여 
-                    ; 함수의 반환 값으로 설정 
-    ret  
+    pushfq          ; RFLAGS 레지스터를 스택에 저장
+    pop rax         ; 스택에 저장된 RFLAGS 레지스터를 RAX 레지스터에 저장하여
+                    ; 함수의 반환 값으로 설정
+    ret
+
+;----------------------------------------------------------
+; 새 GDT에 맞게 세그먼트 셀렉터를 모두 교체
+; CS를 0x08, DS/ES/FS/GS/SS를 0x10으로 재설정
+; PARAM: 없음
+;----------------------------------------------------------
+kReloadSegments:
+    ; 데이터 세그먼트 셀렉터를 0x10(커널 데이터 세그먼트)으로 교체
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    ; CS 셀렉터를 0x08(커널 코드 세그먼트)로 교체하기 위해 far return 사용
+    pop rax             ; 호출자의 리턴 어드레스를 RAX에 저장
+    push 0x08           ; 새로운 CS 셀렉터를 스택에 삽입
+    push rax            ; 리턴 어드레스를 스택에 삽입
+    o64 retf            ; far return으로 CS를 0x08로 교체하면서 복귀

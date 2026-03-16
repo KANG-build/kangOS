@@ -2,6 +2,7 @@
 #include "Keyboard.h"
 #include "Descriptor.h"
 #include "PIC.h"
+#include "AssemblyUtility.h"
 
 // 함수 선언
 void kPrintString( int iX, int iY, const char* pcString );
@@ -19,6 +20,7 @@ void Main( void )
     kPrintString( 0, 12, "GDT Initialize And Switch For IA-32e Mode...[    ]" );
     kInitializeGDTTableAndTSS();
     kLoadGDTR( GDTR_STARTADDRESS );
+    kReloadSegments();
     kPrintString( 45, 12, "Pass" );
 
     kPrintString( 0, 13, "TSS Segment Load............................[    ]" );

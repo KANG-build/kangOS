@@ -5,6 +5,6 @@ InterruptHandler.o: ../Source/InterruptHandler.c \
 Keyboard.o: ../Source/Keyboard.c ../Source/Types.h \
  ../Source/AssemblyUtility.h ../Source/Keyboard.h
 Main.o: ../Source/Main.c ../Source/Types.h ../Source/Keyboard.h \
- ../Source/Descriptor.h ../Source/PIC.h
+ ../Source/Descriptor.h ../Source/PIC.h ../Source/AssemblyUtility.h
 PIC.o: ../Source/PIC.c ../Source/PIC.h ../Source/Types.h
 Utility.o: ../Source/Utility.c ../Source/Utility.h ../Source/Types.h

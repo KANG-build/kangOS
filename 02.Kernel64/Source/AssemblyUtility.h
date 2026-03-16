@@ -15,5 +15,6 @@ void kLoadIDTR( QWORD qwIDTRAddress );
 void kEnableInterrupt( void );
 void kDisableInterrupt( void );
 QWORD kReadRFLAGS( void );
+void kReloadSegments( void );
 
 #endif /* __ASSEMBLYUTILITY_H__ */
