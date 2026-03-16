@@ -80,8 +80,6 @@ void Main( void )
             }
         }
     }
-
-    while( 1 ) ;
 }
 
 // 문자열을 X, Y 위치에 출력
