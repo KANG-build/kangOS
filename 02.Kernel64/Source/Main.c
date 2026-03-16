@@ -44,7 +44,7 @@ void Main( void )
         while( 1 ) ;
     }
 
-    kPrintString( 0, 16, "PIC Controller And Interrupt Initialize....[    ]" );
+    kPrintString( 0, 16, "PIC Controller And Interrupt Initialize.....[    ]" );
     // PIC 컨트롤러 초기화 및 모든 인터럽트 활성화
     kInitializePIC();
     kMaskPICInterrupt( 0 );
