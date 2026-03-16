@@ -190,3 +190,18 @@ void kInitializeIDTTables( void )
             IDT_FLAGS_KERNEL, IDT_TYPE_INTERRUPT );
     }
 }
+
+/**
+ *  IDT 게이트 디스크립터에 값을 설정
+ */
+void kSetIDTEntry( IDTENTRY* pstEntry, void* pvHandler, WORD wSelector,
+        BYTE bIST, BYTE bFlags, BYTE bType )
+{
+    pstEntry->wLowerBaseAddress = ( QWORD ) pvHandler & 0xFFFF;
+    pstEntry->wSegmentSelector = wSelector;
+    pstEntry->bIST = bIST & 0x3;
+    pstEntry->bTypeAndFlags = bType | bFlags;
+    pstEntry->wMiddleBaseAddress = ( ( QWORD ) pvHandler >> 16 ) & 0xFFFF;
+    pstEntry->dwUpperBaseAddress = ( QWORD ) pvHandler >> 32;
+    pstEntry->dwReserved = 0;
+}
