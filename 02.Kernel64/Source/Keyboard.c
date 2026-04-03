@@ -78,7 +78,7 @@ BOOL kActivateKeyboard( void )
     BOOL bResult;
 
     // 인터럽트 불가 
-    bPreviousInterrupt = kSetIntteruptFlag( FALSE );
+    bPreviousInterrupt = kSetInterruptFlag( FALSE );
 
     // 컨트롤 레지스터(포트 0x64)에 키보드 활성화 커맨드(0xAE)를 전달하여 키보드 디바이스 활성화
     kOutPortByte( 0x64, 0xAE );
