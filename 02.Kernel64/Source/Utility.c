@@ -1,6 +1,7 @@
 #include "Utility.h"
 #include "Types.h"
 #include "AssemblyUtility.h"
+#include <stdarg.h>
 
 // 메모리를 특정 값으로 채움
 void kMemSet( void* pvDestination, BYTE bData, int iSize )
