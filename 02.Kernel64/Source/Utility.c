@@ -72,3 +72,342 @@ BOOL kSetInterruptFlag( BOOL bEnableInterrupt )
     }
     return FALSE;
 }
+
+// 문자열의 길이를 반환 
+int kStrLen( const char* pcBuffer )
+{
+    int i;
+
+    for ( i = 0 ; ; i++ )
+    {
+        if( pcBuffer[ i ] == '\0' )
+        {
+            break;
+        }
+    }
+    return i;
+}
+
+// 램의 총 크기(MB 단위)
+static gs_qwTotalRAMMBSize = 0;
+
+// 64MB 이상의 위치부터 램 크기를 체크 
+//      최초 부팅 과정에서 한 번만 호출해야 함 
+void kCheckTotalRAMSize( void ) 
+{
+    DWORD* pdwCurrentAddress;
+    DWORD dwPreviousValue;
+
+    // 64MB(0x4000000)부터 4MB 단위로 검사 시작
+    pdwCurrentAddress = ( DWORD* ) 0x4000000;
+    while( 1 )
+    {
+        // 이전에 메모리에 있던 값을 저장 
+        dwPreviousValue = *pdwCurrentAddress;
+        // 0x12345678을 써서 읽었을 때 문제가 없는 곳까지를 유효한 메모리 영역으로 인정 
+        *pdwCurrentAddress = 0x12345678;
+        if ( *pdwCurrentAddress != 0x12345678 )
+        {
+            break;
+        }
+        // 이전 메모리 값으로 복원 
+        *pdwCurrentAddress = dwPreviousValue;
+        // 다음 4MB 위치로 이동 
+        pdwCurrentAddress += ( 0x400000 / 4);
+    }
+    // 체크가 성공한 어드레스를 1MB로 나누어 MB 단위로 계산 
+    gs_qwTotalRAMMBSize = ( QWORD ) pdwCurrentAddress / 0x100000;
+}
+
+// RAM 크기를 반환 
+QWORD kGetTotalRAMSize( void )
+{
+    return gs_qwTotalRAMMBSize;
+}
+
+// atoi() 함수의 내부 구현 
+long kAToI( const char* pcBuffer, int iRadix )
+{
+    long lReturn;
+
+    switch ( iRadix )
+    {
+        // 16진수 
+    case 16:
+        lReturn = kHexStringToQword( pcBuffer );
+        break;
+
+        // 10진수 또는 기타 
+    case 10: 
+    default:
+        lReturn = kDecimalStringToLong( pcBuffer );
+        break;
+    }
+    return lReturn;
+}
+
+// 16진수 문자열을 QWORD로 변환 
+QWORD kHexStringToQword( const char* pcBuffer )
+{
+    QWORD qwValue = 0;
+    int i;
+
+    // 문자열을 돌면서 차례로 변환
+    for( i = 0; pcBuffer[ i ] != '\0'; i++ )
+    {
+        qwValue *= 16;
+        if(( 'A' <= pcBuffer[ i ]) && (pcBuffer[ i ] <= 'Z'))
+        {
+            qwValue += ( pcBuffer[ i ] - 'A') + 10;
+        }
+        else if(('a' <= pcBuffer[ i ]) && (pcBuffer[i] <= 'z'))
+        {
+            qwValue += (pcBuffer[i] - 'a') + 10;
+        }
+        else 
+        {
+            qwValue += pcBuffer[ i ] - '0';
+        }
+    }
+    return qwValue;
+}
+
+// 10진수 문자열을 long으로 변환 
+long kDecimalStringToLong( const char* pcBuffer )
+{
+    long lValue = 0;
+    int i;
+
+    // 음수면 -를 제외하고 나머지를 먼저 long으로 변환
+    if( pcBuffer[ 0 ] == '-')
+    {
+        i = 1;
+    }
+    else
+    {
+        i = 0;
+    }
+
+    // 문자열을 돌면서 차례로 변환 
+    for( ; pcBuffer[ i ] != '\0'; i++ )
+    {
+        lValue *= 10;
+        lValue += pcBuffer[ i ] - '0';
+    }
+
+    // 음수면 - 추가 
+    if( pcBuffer[ 0 ] == '-')
+    {
+        lValue = -lValue;
+    }
+    return lValue;
+}
+
+// itoa() 함수의 내부 구현
+int kIToA( long lValue, char* pcBuffer, int iRadix )
+{
+    int iReturn;
+
+    switch( iRadix )
+    {
+        // 16진수
+        case 16:
+            iReturn = kHexToString( lValue, pcBuffer );
+            break;
+
+        // 10진수 또는 기타
+        case 10:
+        default:
+            iReturn = kDecimalToString( lValue, pcBuffer );
+            break;
+    }
+
+    return iReturn;
+}
+
+// 16진수 값을 문자열로 변환
+int kHexToString( QWORD qwValue, char* pcBuffer )
+{
+    QWORD i;
+    QWORD qwCurrentValue;
+
+    // 0이 들어오면 바로 처리
+    if( qwValue == 0 )
+    {
+        pcBuffer[ 0 ] = '0';
+        pcBuffer[ 1 ] = '\0';
+        return 1;
+    }
+
+    // 버퍼에 1의 자리부터 16, 256, ...의 자리 순서로 숫자 삽입
+    for( i = 0 ; qwValue > 0 ; i++ )
+    {
+        qwCurrentValue = qwValue % 16;
+        if( qwCurrentValue >= 10 )
+        {
+            pcBuffer[ i ] = 'A' + ( qwCurrentValue - 10 );
+        }
+        else
+        {
+            pcBuffer[ i ] = '0' + qwCurrentValue;
+        }
+
+        qwValue = qwValue / 16;
+    }
+
+    pcBuffer[ i ] = '\0';
+
+    // 문자열 뒤집기
+    kReverseString( pcBuffer );
+    return i;
+}
+
+// 10진수 값을 문자열로 변환
+int kDecimalToString( long lValue, char* pcBuffer )
+{
+    long i;
+
+    // 0 처리
+    if( lValue == 0 )
+    {
+        pcBuffer[ 0 ] = '0';
+        pcBuffer[ 1 ] = '\0';
+        return 1;
+    }
+
+    // 음수 처리
+    if( lValue < 0 )
+    {
+        i = 1;
+        pcBuffer[ 0 ] = '-';
+        lValue = -lValue;
+    }
+    else
+    {
+        i = 0;
+    }
+
+    // 숫자 삽입
+    for( ; lValue > 0 ; i++ )
+    {
+        pcBuffer[ i ] = '0' + lValue % 10;
+        lValue = lValue / 10;
+    }
+
+    pcBuffer[ i ] = '\0';
+
+    // 문자열 뒤집기
+    if( pcBuffer[ 0 ] == '-' )
+    {
+        kReverseString( &pcBuffer[ 1 ] );
+    }
+    else
+    {
+        kReverseString( pcBuffer );
+    }
+
+    return i;
+}
+
+// 문자열 뒤집기
+void kReverseString( char* pcBuffer )
+{
+    int iLength;
+    int i;
+    char cTemp;
+
+    iLength = kStrLen( pcBuffer );
+
+    for( i = 0 ; i < iLength / 2 ; i++ )
+    {
+        cTemp = pcBuffer[ i ];
+        pcBuffer[ i ] = pcBuffer[ iLength - 1 - i ];
+        pcBuffer[ iLength - 1 - i ] = cTemp;
+    }
+}
+
+// sprintf() 함수의 내부 구현
+int kSPrintf( char* pcBuffer, const char* pcFormatString, ... )
+{
+    va_list ap;
+    int iReturn;
+
+    va_start( ap, pcFormatString );
+    iReturn = kVSPrintf( pcBuffer, pcFormatString, ap );
+    va_end( ap );
+
+    return iReturn;
+}
+
+// vsprintf() 함수의 내부 구현
+int kVSPrintf( char* pcBuffer, const char* pcFormatString, va_list ap )
+{
+    QWORD i, j;
+    int iBufferIndex = 0;
+    int iFormatLength, iCopyLength;
+    char* pcCopyString;
+    QWORD qwValue;
+    int iValue;
+
+    iFormatLength = kStrLen( pcFormatString );
+
+    for( i = 0 ; i < iFormatLength ; i++ )
+    {
+        if( pcFormatString[ i ] == '%' )
+        {
+            i++;
+
+            switch( pcFormatString[ i ] )
+            {
+                // 문자열 출력
+                case 's':
+                    pcCopyString = ( char* ) ( va_arg( ap, char* ) );
+                    iCopyLength = kStrLen( pcCopyString );
+                    kMemCpy( pcBuffer + iBufferIndex, pcCopyString, iCopyLength );
+                    iBufferIndex += iCopyLength;
+                    break;
+
+                // 문자 출력
+                case 'c':
+                    pcBuffer[ iBufferIndex ] = ( char ) ( va_arg( ap, int ) );
+                    iBufferIndex++;
+                    break;
+
+                // 정수 출력
+                case 'd':
+                case 'i':
+                    iValue = ( int ) ( va_arg( ap, int ) );
+                    iBufferIndex += kIToA( iValue, pcBuffer + iBufferIndex, 10 );
+                    break;
+
+                // 4바이트 Hex 출력
+                case 'x':
+                case 'X':
+                    qwValue = ( DWORD ) ( va_arg( ap, DWORD ) ) & 0xFFFFFFFF;
+                    iBufferIndex += kIToA( qwValue, pcBuffer + iBufferIndex, 16 );
+                    break;
+
+                // 8바이트 Hex 출력
+                case 'q':
+                case 'Q':
+                case 'p':
+                    qwValue = ( QWORD ) ( va_arg( ap, QWORD ) );
+                    iBufferIndex += kIToA( qwValue, pcBuffer + iBufferIndex, 16 );
+                    break;
+
+                default:
+                    pcBuffer[ iBufferIndex ] = pcFormatString[ i ];
+                    iBufferIndex++;
+                    break;
+            }
+        }
+        else
+        {
+            pcBuffer[ iBufferIndex ] = pcFormatString[ i ];
+            iBufferIndex++;
+        }
+    }
+
+    pcBuffer[ iBufferIndex ] = '\0';
+    return iBufferIndex;
+}
