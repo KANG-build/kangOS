@@ -100,3 +100,17 @@ kReloadSegments:
     push 0x08           ; 새로운 CS 셀렉터를 스택에 삽입
     push rax            ; 리턴 어드레스를 스택에 삽입
     o64 retf            ; far return으로 CS를 0x08로 교체하면서 복귀
+
+; 타임 스탬프 카운터를 읽어서 반환
+;   PARAM: 없음 
+kReadTSC:
+    push rdx            ; RDX 레지스터를 스택에 저장 
+
+    rdtsc               ; 타임 스탬프 카운터를 읽어서 RDX:RAX에 저장 
+
+    shl rdx, 32         ; RDX 레지스터에 있는 상위 32비트 TSC 값과 RAX 레지스터에 있는 
+    or rax, rdx         ; 하위 32비트 TSC 값을 OR하여 RAX 레지스터에 64비트 TSC 값을 저장 
+
+    pop rdx 
+    ret
+    
