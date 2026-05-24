@@ -6,6 +6,7 @@ SECTION .text        ; text 섹션(세그먼트)을 정의
 global  kInPortByte, kOutPortByte, kLoadGDTR, kLoadTR, kLoadIDTR
 global kEnableInterrupt, kDisableInterrupt, kReadRFLAGS
 global kReloadSegments
+global kReadTSC
 
 ; 포트로부터 1바이트를 읽음
 ; PARAM: 포트 번호
