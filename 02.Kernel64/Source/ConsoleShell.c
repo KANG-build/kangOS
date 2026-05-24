@@ -83,7 +83,7 @@ void kStartConsoleShell( void )
             }
 
             // 버퍼에 공간이 남아 있을 때만 가능 
-            if( iCommandBufferIndex < CONSOLESHELL_MAXCOMMANDBUFFERCOUNT )
+            if( iCommandBufferIndex < CONSOLESHELL_MAXCOMMANDBUFFERCOUNT - 1 )
             {
                 vcCommandBuffer[ iCommandBufferIndex++ ] = bKey;
                 kPrintf( "%c", bKey );
@@ -95,17 +95,42 @@ void kStartConsoleShell( void )
 // 커맨드 버퍼에 있는 커맨드를 비교하여 해당 커맨드를 처리하는 함수를 수행 
 void kExecuteCommand( const char* pcCommandBuffer )
 {
-    int i, iSpaceIndex;
+    int i, iSpaceIndex, iCommandStartIndex;
     int iCommandBufferLength, iCommandLength;
     int iCount;
+    const char* pcParameterBuffer;
 
-    // 공백으로 구분된 커맨드를 추출 
+    // 앞쪽 공백을 건너뛰고 공백으로 구분된 커맨드를 추출
     iCommandBufferLength = kStrLen( pcCommandBuffer );
-    for( iSpaceIndex = 0; iSpaceIndex < iCommandBufferLength ; iSpaceIndex++ )
+    for( iCommandStartIndex = 0; iCommandStartIndex < iCommandBufferLength; iCommandStartIndex++ )
+    {
+        if( pcCommandBuffer[ iCommandStartIndex ] != ' ' )
+        {
+            break;
+        }
+    }
+
+    // 공백만 입력한 경우에는 아무 작업도 하지 않음
+    if( iCommandStartIndex >= iCommandBufferLength )
+    {
+        return;
+    }
+
+    for( iSpaceIndex = iCommandStartIndex; iSpaceIndex < iCommandBufferLength ; iSpaceIndex++ )
     {
         if( pcCommandBuffer[ iSpaceIndex ] == ' ')
         {
             break;
+        }
+    }
+
+    pcParameterBuffer = "";
+    if( iSpaceIndex < iCommandBufferLength )
+    {
+        pcParameterBuffer = pcCommandBuffer + iSpaceIndex + 1;
+        while( *pcParameterBuffer == ' ' )
+        {
+            pcParameterBuffer++;
         }
     }
 
@@ -115,10 +140,11 @@ void kExecuteCommand( const char* pcCommandBuffer )
     {
         iCommandLength = kStrLen( gs_vstCommandTable[ i ].pcCommand );
         // 커맨드의 길이와 내용이 완전히 일치하는지 검사 
-        if((iCommandLength == iSpaceIndex ) &&
-            (kMemCmp( gs_vstCommandTable[ i ].pcCommand, pcCommandBuffer, iSpaceIndex ) == 0)) 
+        if((iCommandLength == iSpaceIndex - iCommandStartIndex ) &&
+            (kMemCmp( gs_vstCommandTable[ i ].pcCommand,
+                      pcCommandBuffer + iCommandStartIndex, iCommandLength ) == 0))
         {
-            gs_vstCommandTable[i].pfFunction( pcCommandBuffer + iSpaceIndex + 1 );
+            gs_vstCommandTable[i].pfFunction( pcParameterBuffer );
             break;
         }
     }
@@ -126,7 +152,7 @@ void kExecuteCommand( const char* pcCommandBuffer )
     // 리스트에서 찾을 수 없다면 에러 출력 
     if ( i >= iCount )
     {
-        kPrintf( "'%s' is not found.\n", pcCommandBuffer );
+        kPrintf( "'%s' is not found.\n", pcCommandBuffer + iCommandStartIndex );
     }
 }
 
@@ -144,6 +170,13 @@ int kGetNextParameter( PARAMETERLIST* pstList, char* pcParameter )
     int i;
     int iLength;
 
+    // 연속된 공백은 파라미터 구분자로만 취급
+    while( ( pstList->iCurrentPosition < pstList->iLength ) &&
+           ( pstList->pcBuffer[ pstList->iCurrentPosition ] == ' ' ) )
+    {
+        pstList->iCurrentPosition++;
+    }
+
     // 더 이상 파라미터가 없으면 나감 
     if( pstList->iLength <= pstList->iCurrentPosition )
     {
@@ -160,12 +193,12 @@ int kGetNextParameter( PARAMETERLIST* pstList, char* pcParameter )
     }
 
     // 파라미터를 복사하고 길이를 반환 
-    kMemCpy( pcParameter, pstList->pcBuffer + pstList->iCurrentPosition, i );
     iLength = i - pstList->iCurrentPosition; 
+    kMemCpy( pcParameter, pstList->pcBuffer + pstList->iCurrentPosition, iLength );
     pcParameter[ iLength ] = '\0';
 
     // 파라미터의 위치 업데이터 
-    pstList->iCurrentPosition += iLength + 1;
+    pstList->iCurrentPosition = i;
     return iLength;
 }
 
@@ -318,7 +351,7 @@ void kWaitUsingPIT( const char* pcParameterBuffer )
         return;
     }
 
-    lMillisecond = kAToI( pcParameterBuffer, 10 );
+    lMillisecond = kAToI( vcParameter, 10 );
     kPrintf("%d ms Sleep Start...\n", lMillisecond );
 
     // 인터럽트를 비활성화하고 PIT 컨트롤러를 통해 직접 시간을 측정 
@@ -364,7 +397,7 @@ void kMeasureProcessorSpeed( const char* pcParameterBuffer )
     }
     // 타이머 복원 
     kInitializePIT( MSTOCOUNT( 1 ), TRUE );
-    kEnableInterrupt;
+    kEnableInterrupt();
 
     kPrintf( "\nCPU Speed = %d MHz\n", qwTotalTSC / 10 / 1000 / 1000 );
 }
@@ -384,4 +417,3 @@ void kShowDateAndTime( const char* pcParameterBuffer )
                 kConvertDayOfWeekToString( bDayOfWeek ));
     kPrintf( "Time: %d:%d:%d\n", bHour, bMinute, bSecond );
 }
-

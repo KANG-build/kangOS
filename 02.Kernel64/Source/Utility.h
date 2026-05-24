@@ -11,6 +11,7 @@ int  kMemCmp( const void* pvDestination, const void* pvSource, int iSize );
 BOOL kSetInterruptFlag( BOOL bEnableInterrupt );
 void kCheckTotalRAMSize( void );
 QWORD kGetTotalRAMSize( void );
+int kStrLen( const char* pcBuffer );
 void kReverseString( char* pcBuffer );
 long kAToI( const char* pcBuffer, int iRadix );
 QWORD kHexStringToQword( const char* pcBuffer );

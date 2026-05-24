@@ -99,8 +99,6 @@ typedef struct kKeyDataStruct
     BYTE bFlags;
 } KEYDATA;
 
-#pragma pack( pop )
-
 // 함수
 BOOL kIsOutputBufferFull( void );
 BOOL kIsInputBufferFull( void );
