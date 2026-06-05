@@ -5,6 +5,7 @@
 #include "AssemblyUtility.h"
 #include "Console.h"
 #include "ConsoleShell.h"
+#include "Utility.h"
 
 // 아래 함수는 C 언어 커널의 시작 부분임
 void Main( void )

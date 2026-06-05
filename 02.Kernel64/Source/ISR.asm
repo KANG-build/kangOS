@@ -9,7 +9,7 @@ extern kCommonExceptionHandler, kCommonInterruptHandler, kKeyboardHandler
 ; C 언어에서 호출할 수 있도록 이름을 노출함(Export)
 ; 예외(Exception) 처리를 위한 ISR
 global kISRDivideError, kISRDebug, kISRNMI, kISRBreakPoint, kISROverflow
-global kISRBoundRangeExceeded, kISRInvalidOpcode, kISRDeviceNotAvailable, kISRDoubleFault,
+global kISRBoundRangeExceeded, kISRInvalidOpcode, kISRDeviceNotAvailable, kISRDoubleFault
 global kISRCoprocessorSegmentOverrun, kISRInvalidTSS, kISRSegmentNotPresent
 global kISRStackSegmentFault, kISRGeneralProtection, kISRPageFault, kISR15
 global kISRFPUError, kISRAlignmentCheck, kISRMachineCheck, kISRSIMDError, kISRETCException

@@ -89,7 +89,7 @@ int kStrLen( const char* pcBuffer )
 }
 
 // 램의 총 크기(MB 단위)
-static gs_qwTotalRAMMBSize = 0;
+static QWORD gs_qwTotalRAMMBSize = 0;
 
 // 64MB 이상의 위치부터 램 크기를 체크 
 //      최초 부팅 과정에서 한 번만 호출해야 함 

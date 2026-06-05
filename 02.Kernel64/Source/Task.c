@@ -1,5 +1,6 @@
 #include "Task.h"
 #include "Descriptor.h"
+#include "Utility.h"
 
 // 파라미터를 이용해서 TCB를 설정 
 void kSetUpTask( TCB* pstTCB, QWORD qwID, QWORD qwFlags, QWORD qwEntryPointAddress, 

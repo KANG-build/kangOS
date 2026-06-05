@@ -1,4 +1,5 @@
 #include "PIT.h"
+#include "AssemblyUtility.h"
 
 // PIT를 초기화
 void kInitializePIT( WORD wCount, BOOL bPeriodic )

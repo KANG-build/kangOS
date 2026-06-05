@@ -1,4 +1,5 @@
 #include "Queue.h"
+#include "Utility.h"
 
 // 큐를 초기화 
 void kInitializeQueue( QUEUE* pstQueue, void* pvQueueBuffer, int iMaxDataCount, int iDataSize )
