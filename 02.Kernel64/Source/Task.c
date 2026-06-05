@@ -17,11 +17,11 @@ void kSetUpTask( TCB* pstTCB, QWORD qwID, QWORD qwFlags, QWORD qwEntryPointAddre
 
     // 세그먼트 셀렉터 설정 
     pstTCB->stContext.vqRegister[ TASK_CSOFFSET ] = GDT_KERNELCODESEGMENT;
-    pstTCB->stContext.vqRegister[ TASK_DSOFFSET ] = GDT_KERNELCODESEGMENT;
-    pstTCB->stContext.vqRegister[ TASK_ESOFFSET ] = GDT_KERNELCODESEGMENT;
-    pstTCB->stContext.vqRegister[ TASK_FSOFFSET ] = GDT_KERNELCODESEGMENT;
-    pstTCB->stContext.vqRegister[ TASK_GSOFFSET ] = GDT_KERNELCODESEGMENT;
-    pstTCB->stContext.vqRegister[ TASK_SSOFFSET ] = GDT_KERNELCODESEGMENT;
+    pstTCB->stContext.vqRegister[ TASK_DSOFFSET ] = GDT_KERNELDATASEGMENT;
+    pstTCB->stContext.vqRegister[ TASK_ESOFFSET ] = GDT_KERNELDATASEGMENT;
+    pstTCB->stContext.vqRegister[ TASK_FSOFFSET ] = GDT_KERNELDATASEGMENT;
+    pstTCB->stContext.vqRegister[ TASK_GSOFFSET ] = GDT_KERNELDATASEGMENT;
+    pstTCB->stContext.vqRegister[ TASK_SSOFFSET ] = GDT_KERNELDATASEGMENT;
 
     // RIP 레지스터와 인터럽트 플래그 설정 
     pstTCB->stContext.vqRegister[ TASK_RIPOFFSET ] = qwEntryPointAddress;
