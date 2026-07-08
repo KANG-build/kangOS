@@ -87,8 +87,8 @@ void kTimerHandler( int iVectorNumber )
     vcBuffer[ 6 ] = '0' + iVectorNumber % 10;
 
     // 발생한 횟수 출력
-    vcBuffer[ 8 ] = '0' + g_iTimerInterruptCount;
-    g_iTimerInterruptCount = ( g_iTimerInterruptCount + 1 ) % 10;
+    vcBuffer[ 8 ] = '0' + g_TimerInterruptCount;
+    g_TimerInterruptCount = ( g_TimerInterruptCount + 1 ) % 10;
     kPrintStringXY( 70, 0, vcBuffer );
     //==============================================================================
 

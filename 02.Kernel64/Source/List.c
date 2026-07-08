@@ -139,8 +139,8 @@ void* kFindList( const LIST* pstList, QWORD qwID )
     return NULL;
 }
 
-// 리스트의 헤더를 반환 
-void* kGetTailFromList( const LIST* pstList )
+// 리스트의 헤더를 반환
+void* kGetHeaderFromList( const LIST* pstList )
 {
     return pstList->pvHeader;
 }

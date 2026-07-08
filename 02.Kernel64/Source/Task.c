@@ -1,6 +1,7 @@
 #include "Task.h"
 #include "Descriptor.h"
 #include "Utility.h"
+#include "AssemblyUtility.h"
 
 // 스케줄러 관련 자료구조
 static SCHEDULER gs_stScheduler;
@@ -17,7 +18,7 @@ void kInitializeTCBPool( void )
 
         // 태스크 풀의 어드레스를 지정하고 초기화 
         gs_stTCBPoolManager.pstStartAddress = ( TCB* ) TASK_TCBPOOLADDRESS;
-        kMemSet( TASK_TCBPOOLADDRESS, 0, sizeof( TCB ) * TASK_MAXCOUNT );
+        kMemSet( ( void* ) TASK_TCBPOOLADDRESS, 0, sizeof( TCB ) * TASK_MAXCOUNT );
 
         // TCB에 ID 할당 
         for( i = 0; i < TASK_MAXCOUNT ; i++ )
@@ -105,7 +106,7 @@ TCB* kCreateTask( QWORD qwFlags, QWORD qwEntryPointAddress )
 }
 
 // 파라미터를 이용해서 TCB를 설정 
-void kSetUpTask( TCB* pstTCB, QWORD qwID, QWORD qwFlags, QWORD qwEntryPointAddress, 
+void kSetUpTask( TCB* pstTCB, QWORD qwFlags, QWORD qwEntryPointAddress,
         void* pvStackAddress, QWORD qwStackSize )
 {
     // 컨텍스트 초기화 
@@ -131,8 +132,7 @@ void kSetUpTask( TCB* pstTCB, QWORD qwID, QWORD qwFlags, QWORD qwEntryPointAddre
     // RFLAGS 레지스터의 IF 비트(비트 9)를 1로 설정하여 인터럽트 활성화 
     pstTCB->stContext.vqRegister[ TASK_RFLAGSOFFSET ] |= 0x0200;
     
-    // ID 및 스택, 그리고 플래그 저장 
-    pstTCB->qwID = qwID;
+    // 스택, 그리고 플래그 저장
     pstTCB->pvStackAddress = pvStackAddress;
     pstTCB->qwStackSize = qwStackSize;
     pstTCB->qwFlags = qwFlags;

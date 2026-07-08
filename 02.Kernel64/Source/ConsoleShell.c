@@ -493,7 +493,7 @@ void kTestTask1( void )
         }
 
         // 문자 및 색깔 지정
-        pstScreen[ iY * CONSOLE_WIDTH + iX ].bCharacter = bData;
+        pstScreen[ iY * CONSOLE_WIDTH + iX ].bCharactor = bData;
         pstScreen[ iY * CONSOLE_WIDTH + iX ].bAttribute = bData & 0x0F;
         bData++;
 
@@ -520,7 +520,7 @@ void kTestTask2( void )
     while( 1 )
     {
         // 회전하는 바람개비를 표시
-        pstScreen[ iOffset ].bCharacter = vcData[ i % 4 ];
+        pstScreen[ iOffset ].bCharactor = vcData[ i % 4 ];
 
         // 색깔 지정
         pstScreen[ iOffset ].bAttribute = ( iOffset % 15 ) + 1;

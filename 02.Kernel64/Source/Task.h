@@ -71,10 +71,6 @@ typedef struct kTaskControlBlockStruct
     // 콘텍스트
     CONTEXT stContext;
 
-    // ID 및 플래그
-    QWORD qwID;
-    QWORD qwFlags;
-
     // 스택의 어드레스와 크기
     void* pvStackAddress;
     QWORD qwStackSize;
