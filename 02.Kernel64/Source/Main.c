@@ -6,6 +6,8 @@
 #include "Console.h"
 #include "ConsoleShell.h"
 #include "Utility.h"
+#include "Task.h"
+#include "PIT.h"
 
 // 아래 함수는 C 언어 커널의 시작 부분임
 void Main( void )
@@ -42,6 +44,12 @@ void Main( void )
     kCheckTotalRAMSize();
     kSetCursor( 45, iCursorY++ );
     kPrintf( "Pass], Size = %d MB\n", kGetTotalRAMSize() );
+
+    kPrintf( "TCB Pool And Scheduler Initialize...........[Pass]\n" );
+    iCursorY++;
+    kInitializeScheduler();
+    // 1ms당 한 번씩 인터럽트가 발생하도록 설정
+    kInitializePIT( MSTOCOUNT( 1 ), 1 );
 
     kPrintf( "Keyboard Activate And Queue Initialize......[    ]" );
     // 키보드를 활성화
